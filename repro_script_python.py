@@ -23,73 +23,60 @@ from exps.rebuttal_exps.runtime_scaling import exp_runtime_scaling
 from exps.rebuttal_exps.eps_suboptimal import eps_suboptimal_exp, plot_eps_suboptimal
 from exps.rebuttal_exps.scaling_exp_gpt2 import scaling_exp_gpt2, plot_scaling_gpt2
 from exps.crypto_pairs.run_crypto_pairs_scaling import run_crypto_pairs_scaling
-from utils.constants import SCALING_BASELINES_ALGORITHMS, ACTION_ELIMINATION
+from exps.high_dimension.run_sift_scaling import sift_scaling
+from exps.high_dimension.run_song_scaling import song_scaling
+from utils.constants import SCALING_BASELINES_ALGORITHMS, TRADEOFF_BASELINES_ALGORITHMS, ACTION_ELIMINATION
 
 
-def find_absent_algorithms(path, algorithms):
+def find_absent_algorithms(path, algorithms, tradeoff=False):
     absent = []
-    for algorithm in algorithms:
-        algo_logs = glob.glob(os.path.join(path, f"*{algorithm}*"))
-        if len(algo_logs) == 0:
-            absent.append(algorithm)
+    if tradeoff:
+        paths = [os.path.join(path, "topk_1"), os.path.join(path, "topk_10")]
+    else:
+        paths = [path]
+
+    for path in paths:
+        for algorithm in algorithms:
+            algo_logs = glob.glob(os.path.join(path, f"*{algorithm}*"))
+            if len(algo_logs) == 0:
+                absent.append(algorithm)
 
     return absent
 
 
-def main(experiment):
+def main():
     path = os.path.join(os.getcwd(), "exps")
 
-    # TODO: change to "appendix"
-    if experiment == "noise":
-        print("experiments for noise robustness")
-        scaling_path = os.path.join(path, "eps_noise", "logs")
-        scaling_algos = find_absent_algorithms(scaling_path, [ACTION_ELIMINATION])
-        scaling_noise(scaling_algos)
-        scaling_noise_plot()
+    # # scaling comparisons
+    # scaling_path = os.path.join(path, "core_scaling", "logs")
+    # scaling_baselines_algos = find_absent_algorithms(
+    #     scaling_path, SCALING_BASELINES_ALGORITHMS
+    # )
+    # scaling_baselines(scaling_baselines_algos)
+    # scaling_baselines_plot(SCALING_BASELINES_ALGORITHMS)
 
-        tradeoff_path = os.path.join(path, "eps_noise", "normalized_logs", "topk*")
-        tradeoff_algos = find_absent_algorithms(tradeoff_path, [ACTION_ELIMINATION])
-        print(tradeoff_path)
-        tradeoff_noise(tradeoff_algos)
-        tradeoff_noise_plot()
-    else:
-        scaling_path = os.path.join(path, "core_scaling", "logs")
-        tradeoff_path = os.path.join(path, "core_tradeoff", "logs")
+    # # tradeoff comparisons
+    # tradeoff_path = os.path.join(path, "core_tradeoff", "normalized_logs")
+    # tradeoff_baselines_algos = find_absent_algorithms(
+    #     tradeoff_path, TRADEOFF_BASELINES_ALGORITHMS, tradeoff=True,
+    # )
+    # tradeoff_baselines(tradeoff_baselines_algos)
+    # tradeoff_baselines_plot(TRADEOFF_BASELINES_ALGORITHMS)
 
-        # generate scaling/tradeoff log files
-        scaling_baselines_algos = find_absent_algorithms(
-            scaling_path, SCALING_BASELINES_ALGORITHMS
-        )
-        tradeoff_baselines_algos = find_absent_algorithms(
-            tradeoff_path, SCALING_BASELINES_ALGORITHMS
-        )
-        scaling_baselines(scaling_baselines_algos)
-        scaling_baselines_plot(SCALING_BASELINES_ALGORITHMS)
-        import ipdb; ipdb.set_trace()
-
-
-        print(f"=> Creating Precision-Speed log files for {tradeoff_baselines_algos}")
-        tradeoff_baselines()
-
-        # generate the relative plots
-        print("=> Generating scaling plots")
-        scaling_fit_plot(ACTION_ELIMINATION)
+    # # sample complexity
+    # scaling_fit_plot(ACTION_ELIMINATION)
+    # run_crypto_pairs_scaling(run=True, plot=True)
+    # sift_scaling(run=True, plot=True)
+    # song_scaling(run=True, plot=True)
     
-        scaling_bucket_ae_plot()
-        print("=> Generating tradeoff plots")
-        tradeoff_baselines_plot()
+    # # compatibility with preprocessing 
+    # scaling_bucket_ae()
+    # scaling_bucket_ae_plot()
 
-        print("==> O(1) scaling on Highly Symmetric dataset")
-        eps_suboptimal_exp()
-        plot_eps_suboptimal()
-
-        print("==> Sample Complexities scaling plots on OPT dataset")
-        scaling_exp_gpt2()
-        plot_scaling_gpt2(is_plot_runtime=False)
-
-        print("==> Runtime Scaling plots on OPT, Movie Lens, and Netflix datasets")
-        exp_runtime_scaling()
+    # runtime 
+    print("==> Runtime Scaling plots on OPT, Movie Lens, and Netflix datasets")
+    exp_runtime_scaling()
 
 
 if __name__ == "__main__":
-    main(sys.argv[1])
+    main()

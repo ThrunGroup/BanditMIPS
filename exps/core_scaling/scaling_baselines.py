@@ -19,6 +19,7 @@ from utils.constants import (
     HIGHLY_SYMMETRIC,
 
     # scaling specific constants
+    ACTION_ELIMINATION,
     SCALING_NUM_EXPERIMENTS,
     SCALING_NUM_SIGNALS,
     SCALING_NUM_ATOMS,
@@ -87,11 +88,9 @@ def scaling_baselines(algorithms, add_noise=False):
                     is_normalize=False,
                     is_logspace=False,
                     num_best_atoms=1,
-                    add_noise=add_noise
+                    add_noise=add_noise,
                 )
-
-           
 
 
 if __name__ == "__main__":
-    scaling_baselines(SCALING_BASELINES_ALGORITHMS)
+    scaling_baselines([ACTION_ELIMINATION])

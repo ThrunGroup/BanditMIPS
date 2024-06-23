@@ -114,10 +114,10 @@ def get_data(
     elif data_type == OPT_LM_HEAD:
         assert len_signal <= 4096, f"GPT2-XL embedding dimension is 1600 which is less than {len_signal}"
         queries_filename = os.path.join(
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), "mips_opt"), "OPT_QUERIES.pt"
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "mips_gpt2"), "OPT_QUERIES.pt"
         )
         atoms_filename = os.path.join(
-            os.path.join(os.path.dirname(os.path.abspath(__file__)), "mips_opt"), "OPT_LM_HEAD_WEIGHT.pt"
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "mips_gpt2"), "OPT_LM_HEAD_WEIGHT.pt"
         )
         queries = torch.load(queries_filename).detach().numpy().astype('float64')
         atoms = torch.load(atoms_filename).detach().numpy().astype('float64')

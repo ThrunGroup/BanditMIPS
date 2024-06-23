@@ -31,28 +31,32 @@ def sift_scaling(run: bool = True, plot: bool = True):
     """
     Run scaling experiments for the toy datasets
     """
+    dirname = "exps/high_dimension/sift_scaling_logs/"
     if run:
-        for data_type in [SIFT_1M]:
-            mean_acc = scaling_exp(
-                epsilon=0.00,
-                delta=0.000001,
-                num_atoms=10,
-                size_minmax=(1e5, 1e6),
-                maxmin=(5000, 0),
-                num_experiments=10,
-                num_signals=1,
-                data_type=SIFT_1M,
-                mips_alg=ACTION_ELIMINATION,
-                with_replacement=True,
-                is_normalize=False,
-                is_logspace=True,
-                dirname="sift_scaling_logs",
-                num_seeds=5,
-            )
-            # TODO(@motiwari): Figure out why this is not 100%
-            assert (
-                mean_acc >= 0.95
-            ), f"Mean accuracy on dataset {data_type} should be above 95\%"
+        if os.path.exists(dirname):
+            print("=> sift 1m logs exists!")
+        else:
+            for data_type in [SIFT_1M]:
+                mean_acc = scaling_exp(
+                    epsilon=0.00,
+                    delta=0.000001,
+                    num_atoms=10,
+                    size_minmax=(1e5, 1e6),
+                    maxmin=(5000, 0),
+                    num_experiments=10,
+                    num_signals=1,
+                    data_type=SIFT_1M,
+                    mips_alg=ACTION_ELIMINATION,
+                    with_replacement=True,
+                    is_normalize=False,
+                    is_logspace=True,
+                    dir_name=dirname,
+                    num_seeds=5,
+                )
+                # TODO(@motiwari): Figure out why this is not 100%
+                assert (
+                    mean_acc >= 0.95
+                ), f"Mean accuracy on dataset {data_type} should be above 95\%"
 
     if plot:
         create_scaling_plots(
@@ -60,8 +64,9 @@ def sift_scaling(run: bool = True, plot: bool = True):
             alg_names=[ACTION_ELIMINATION],
             include_error_bar=True,
             is_fit=True,
-            is_logspace=True,
-            dirname="sift_scaling_logs",
+            is_logspace_x=False,
+            is_logspace_y=False,
+            dir_name=dirname,
         )
 
 

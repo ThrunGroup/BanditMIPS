@@ -15,8 +15,9 @@ def scaling_fit_plot(
         include_error_bar=True,
         data_types=data_types,
         alg_names=[algorithm],
-        dir_name=None,
+        dir_name="sample_complexity/",
         is_logspace_x=False,
+        is_logspace_y=False,
     )
 
 

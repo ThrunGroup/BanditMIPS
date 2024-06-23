@@ -47,19 +47,7 @@ def runtime_scaling_exp(data_type: str):
     log_dirname = os.path.join(
         os.path.dirname(os.path.abspath(__file__)), "runtime_comparison"
     )
-    algorithms = [
-        # PCA_MIPS,
-        # LSH_MIPS,
-        # H2ALSH,
-        # GREEDY_MIPS,
-        ACTION_ELIMINATION,
-        ADAPTIVE_ACTION_ELIMINATION,
-        MEDIAN_ELIMINATION,
-        BUCKET_ACTION_ELIMINATION,
-        NAIVE,
-        # GREEDY_MIPS,
-    ]
-
+    algorithms = [ACTION_ELIMINATION]
     for alg in algorithms:
         scaling_exp(
             epsilon=epsilon,
@@ -161,7 +149,7 @@ def get_speedups():
                 print(f"signal size: {x[idx]} / speedup: {y[idx]}x")
 
 def exp_runtime_scaling():
-    for data_type in [OPT_LM_HEAD, NETFLIX, MOVIE_LENS]:
+    for data_type in [OPT_LM_HEAD, NETFLIX]:
         runtime_scaling_exp(data_type=data_type)
     plot_runtime_scaling(is_plot_runtime=True)
     get_speedups()

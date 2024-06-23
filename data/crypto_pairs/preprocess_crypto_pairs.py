@@ -61,6 +61,9 @@ def main(
 
     np.save(os.path.join(os.getcwd(), f"{filename}.npy"), dataset)
 
+def preprocess_crypto_pairs():
+    main(with_volume=False)
+
 
 if __name__ == "__main__":
     main(with_volume=False)

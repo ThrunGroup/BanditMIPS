@@ -5,6 +5,7 @@ from exps.plot_baselines import create_tradeoff_plots
 from exps.speedup_precision_exps import speedup_precision_exps
 from utils.constants import (
     BATCH_SIZE,
+    NUM_SEEDS,
 
     # datasets
     NORMAL_CUSTOM,
@@ -31,6 +32,7 @@ from utils.constants import (
     ASYMMETRIC,
 
     # tradeoff specific constants
+    TRADEOFF_BASELINES_DATATYPES,
     TRADEOFF_NUM_EXPERIMENTS,
     TRADEOFF_NUM_ATOMS,
     TRADEOFF_NUM_SIGNALS,
@@ -103,71 +105,40 @@ def large_dim_tradeoff_baselines(is_plot: bool = False):
             )
 
 
-def tradeoff_baselines(is_plot: bool = False):
-    # Get data for the scaling experiments for the datasets (three synthetic datasets)
-    algorithms = [
-        ACTION_ELIMINATION,
-        ADAPTIVE_ACTION_ELIMINATION,
-        MEDIAN_ELIMINATION,
-        GREEDY_MIPS,
-        LSH_MIPS,
-        H2ALSH,
-        NEQ_MIPS,
-        PCA_MIPS,
-        NAPG_MIPS,
-        HNSW_MIPS,
-    ]
-    data_types = [MOVIE_LENS, NETFLIX, NORMAL_CUSTOM, COR_NORMAL_CUSTOM]
-
-    # Get data for the scaling experiments for the datasets (three synthetic datasets)
-    for top_k in (1, 5, 10):
-        parent_dir = os.path.dirname(os.path.abspath(__file__))
-        log_dir = os.path.join(parent_dir, "normalized_logs", f"topk_{top_k}")
-        for data_type in data_types:  # NORMAL_CUSTOM,
-            if data_type is NETFLIX:
-                len_signals = LEN_SIGNAL_NETFLIX
-            elif data_type is MOVIE_LENS:
-                len_signals = LEN_SIGNAL_MOVIE
-            else:
-                len_signals = TRADEOFF_DIMENSION
-            for alg in algorithms:
-                speedup_precision_exps(
-                    num_atoms=TRADEOFF_NUM_ATOMS,
-                    num_experiments=TRADEOFF_NUM_EXPERIMENTS,
-                    len_signals=len_signals,
-                    num_signals=30,
-                    data_type=data_type,
-                    mips_alg=alg,
-                    with_replacement=False,
-                    dir_name=log_dir,
-                    num_best_atoms=top_k,
-                    num_seeds=1,
-                )
-        if is_plot:
-            create_tradeoff_plots(
-                alg_names=algorithms,
-                data_types=data_types,
-                top_k=top_k,
-                log_dir=log_dir,
-                max_speedup=None,
-                is_logspace=True,
-            )
+def tradeoff_baselines(algorithms):
+    if len(algorithms) == 0:
+        print(f"=> Tradeoff log files already exist!")
+    else:
+        data_types = TRADEOFF_BASELINES_DATATYPES
+        # Get data for the scaling experiments for the datasets (three synthetic datasets)
+        for top_k in (1, 5, 10): 
+            parent_dir = os.path.dirname(os.path.abspath(__file__))
+            log_dir = os.path.join(parent_dir, "normalized_logs", f"topk_{top_k}")
+            if not os.path.exists(log_dir):
+                for data_type in data_types:  # NORMAL_CUSTOM,
+                    if data_type is NETFLIX:
+                        len_signals = LEN_SIGNAL_NETFLIX
+                    elif data_type is MOVIE_LENS:
+                        len_signals = LEN_SIGNAL_MOVIE
+                    else:
+                        len_signals = TRADEOFF_DIMENSION
+                    for alg in algorithms:
+                        speedup_precision_exps(
+                            num_atoms=TRADEOFF_NUM_ATOMS,
+                            num_experiments=TRADEOFF_NUM_EXPERIMENTS,
+                            len_signals=len_signals,
+                            num_signals=TRADEOFF_NUM_SIGNALS,
+                            data_type=data_type,
+                            mips_alg=alg,
+                            with_replacement=False,
+                            dir_name=log_dir,
+                            num_best_atoms=top_k,
+                            num_seeds=NUM_SEEDS,
+                        )
 
 
-def tradeoff_baselines_plot():
-    algorithms = [
-        ACTION_ELIMINATION,
-        ADAPTIVE_ACTION_ELIMINATION,
-        MEDIAN_ELIMINATION,
-        GREEDY_MIPS,
-        LSH_MIPS,
-        H2ALSH,
-        NEQ_MIPS,
-        PCA_MIPS,
-        NAPG_MIPS,
-        HNSW_MIPS,
-    ]
-    data_types = [MOVIE_LENS, NETFLIX, NORMAL_CUSTOM, COR_NORMAL_CUSTOM]
+def tradeoff_baselines_plot(algorithms):
+    data_types = TRADEOFF_BASELINES_DATATYPES
     for top_k in (1, 5, 10):
         parent_dir = os.path.dirname(os.path.abspath(__file__))
         log_dir = os.path.join(parent_dir, "normalized_logs", f"topk_{top_k}")

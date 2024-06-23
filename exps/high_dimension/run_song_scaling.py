@@ -31,26 +31,30 @@ def song_scaling(run: bool = True, plot: bool = True):
     """
     Run scaling experiments for the toy datasets
     """
+    dirname = "exps/high_dimension/song_scaling_logs/"
     if run:
-        for data_type in [SIMPLE_SONG]:
-            mean_acc = scaling_exp(
-                epsilon=0.00,
-                delta=0.0001,
-                num_atoms=10,
-                size_minmax=(1e6, 26e6),
-                num_experiments=10,
-                num_signals=1,
-                data_type=SIMPLE_SONG,
-                mips_alg=ACTION_ELIMINATION,
-                with_replacement=True,
-                is_normalize=False,
-                is_logspace=True,
-                dirname="song_scaling_logs",
-                num_seeds=10,
-            )
-            assert (
-                mean_acc >= 0.95
-            ), f"Mean accuracy on dataset {data_type} should be above 95\%"
+        if os.path.exists(dirname):
+            print("=> simple song logs exists!")
+        else:
+            for data_type in [SIMPLE_SONG]:
+                mean_acc = scaling_exp(
+                    epsilon=0.00,
+                    delta=0.0001,
+                    num_atoms=10,
+                    size_minmax=(1e6, 26e6),
+                    num_experiments=10,
+                    num_signals=1,
+                    data_type=SIMPLE_SONG,
+                    mips_alg=ACTION_ELIMINATION,
+                    with_replacement=True,
+                    is_normalize=False,
+                    is_logspace=True,
+                    dir_name=dirname,
+                    num_seeds=10,
+                )
+                assert (
+                    mean_acc >= 0.95
+                ), f"Mean accuracy on dataset {data_type} should be above 95\%"
 
     if plot:
         create_scaling_plots(
@@ -58,8 +62,9 @@ def song_scaling(run: bool = True, plot: bool = True):
             alg_names=[ACTION_ELIMINATION],
             include_error_bar=True,
             is_fit=True,
-            is_logspace=True,
-            dirname="song_scaling_logs",
+            is_logspace_x=False,
+            is_logspace_y=False,
+            dir_name=dirname,
         )
 
 

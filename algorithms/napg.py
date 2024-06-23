@@ -7,9 +7,12 @@ def hnsw(
         atoms: np.ndarray,
         signals: np.ndarray,
         num_best_atoms: int = 1,
-        ef_construction: int = 8,
-        ef_search: int = 4,
-        num_links_per_node: int = 8,
+        # ef_construction: int = 8,
+        # ef_search: int = 4,
+        # num_links_per_node: int = 8,
+        ef_construction: int = 1,
+        ef_search: int = 1,
+        num_links_per_node: int = 1,
         use_norm_adjusted_factors: bool = True
 ) -> Tuple[np.ndarray, np.ndarray]:
     """
@@ -36,7 +39,7 @@ def hnsw(
     num_atoms, num_dimensions = atoms.shape
 
     # Initialise a graph
-    index = hnswlib.Index(space="ip", dim=num_dimensions, useNormFactor_=use_norm_adjusted_factors)
+    index = hnswlib.Index(space="ip", dim=num_dimensions)
     index.init_index(max_elements=num_atoms, ef_construction=ef_construction, M=num_links_per_node)
 
     # Data insertion
@@ -45,7 +48,7 @@ def hnsw(
     index.set_ef(ef_search)
 
     # Query
-    labels, distances, budget = index.knn_query(signals, k=num_best_atoms)
+    labels, budget = index.knn_query(signals, k=num_best_atoms)
     labels.sort()
 
     budgets = np.array([budget]) / len(signals)

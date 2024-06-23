@@ -141,3 +141,4 @@ dmypy.json
 # real datasets
 *.npy
 *.pt
+data/netflix/combined_data_1.txt

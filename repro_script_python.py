@@ -47,34 +47,34 @@ def find_absent_algorithms(path, algorithms, tradeoff=False):
 def main():
     path = os.path.join(os.getcwd(), "exps")
 
-    # # scaling comparisons
-    # scaling_path = os.path.join(path, "core_scaling", "logs")
-    # scaling_baselines_algos = find_absent_algorithms(
-    #     scaling_path, SCALING_BASELINES_ALGORITHMS
-    # )
-    # scaling_baselines(scaling_baselines_algos)
-    # scaling_baselines_plot(SCALING_BASELINES_ALGORITHMS)
+    # scaling comparisons
+    scaling_path = os.path.join(path, "core_scaling", "logs")
+    scaling_baselines_algos = find_absent_algorithms(
+        scaling_path, SCALING_BASELINES_ALGORITHMS
+    )
+    scaling_baselines(scaling_baselines_algos)
+    scaling_baselines_plot(SCALING_BASELINES_ALGORITHMS)
 
-    # # tradeoff comparisons
-    # tradeoff_path = os.path.join(path, "core_tradeoff", "normalized_logs")
-    # tradeoff_baselines_algos = find_absent_algorithms(
-    #     tradeoff_path, TRADEOFF_BASELINES_ALGORITHMS, tradeoff=True,
-    # )
-    # tradeoff_baselines(tradeoff_baselines_algos)
-    # tradeoff_baselines_plot(TRADEOFF_BASELINES_ALGORITHMS)
+    # tradeoff comparisons
+    tradeoff_path = os.path.join(path, "core_tradeoff", "normalized_logs")
+    tradeoff_baselines_algos = find_absent_algorithms(
+        tradeoff_path, TRADEOFF_BASELINES_ALGORITHMS, tradeoff=True,
+    )
+    tradeoff_baselines(tradeoff_baselines_algos)
+    tradeoff_baselines_plot(TRADEOFF_BASELINES_ALGORITHMS)
 
-    # # sample complexity
-    # scaling_fit_plot(ACTION_ELIMINATION)
-    # run_crypto_pairs_scaling(run=True, plot=True)
-    # sift_scaling(run=True, plot=True)
-    # song_scaling(run=True, plot=True)
+    # sample complexity
+    scaling_fit_plot(ACTION_ELIMINATION)
+    run_crypto_pairs_scaling(run=True, plot=True)
+    sift_scaling(run=True, plot=True)
+    song_scaling(run=True, plot=True)
     
-    # # compatibility with preprocessing 
-    # scaling_bucket_ae()
-    # scaling_bucket_ae_plot()
+    # compatibility with preprocessing 
+    scaling_bucket_ae()
+    scaling_bucket_ae_plot()
 
     # runtime 
-    print("==> Runtime Scaling plots on OPT, Movie Lens, and Netflix datasets")
+    print("==> Runtime Scaling plots on OPT and Netflix datasets")
     exp_runtime_scaling()
 
 

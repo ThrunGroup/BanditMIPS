@@ -73,7 +73,6 @@ def main(experiment):
 
         # generate the relative plots
         print("=> Generating scaling plots")
-        import ipdb; ipdb.set_trace()
         scaling_fit_plot(ACTION_ELIMINATION)
     
         scaling_bucket_ae_plot()

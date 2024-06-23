@@ -22,7 +22,8 @@ from exps.eps_noise.tradeoff_noise_plot import tradeoff_noise_plot
 from exps.rebuttal_exps.runtime_scaling import exp_runtime_scaling
 from exps.rebuttal_exps.eps_suboptimal import eps_suboptimal_exp, plot_eps_suboptimal
 from exps.rebuttal_exps.scaling_exp_gpt2 import scaling_exp_gpt2, plot_scaling_gpt2
-from utils.constants import SCALING_BASELINES_ALGORITHMS, ACTION_ELIMINATION, NETFLIX
+from exps.crypto_pairs.run_crypto_pairs_scaling import run_crypto_pairs_scaling
+from utils.constants import SCALING_BASELINES_ALGORITHMS, ACTION_ELIMINATION
 
 
 def find_absent_algorithms(path, algorithms):
@@ -38,6 +39,7 @@ def find_absent_algorithms(path, algorithms):
 def main(experiment):
     path = os.path.join(os.getcwd(), "exps")
 
+    # TODO: change to "appendix"
     if experiment == "noise":
         print("experiments for noise robustness")
         scaling_path = os.path.join(path, "eps_noise", "logs")
@@ -61,17 +63,19 @@ def main(experiment):
         tradeoff_baselines_algos = find_absent_algorithms(
             tradeoff_path, SCALING_BASELINES_ALGORITHMS
         )
-
-        # create log files
-        print(f"=> Creating Scaling log files for {scaling_baselines_algos}")
         scaling_baselines(scaling_baselines_algos)
+        scaling_baselines_plot(SCALING_BASELINES_ALGORITHMS)
+        import ipdb; ipdb.set_trace()
+
+
         print(f"=> Creating Precision-Speed log files for {tradeoff_baselines_algos}")
         tradeoff_baselines()
 
         # generate the relative plots
         print("=> Generating scaling plots")
-        scaling_baselines_plot(SCALING_BASELINES_ALGORITHMS)
-        scaling_fit_plot(SCALING_BASELINES_ALGORITHMS)
+        import ipdb; ipdb.set_trace()
+        scaling_fit_plot(ACTION_ELIMINATION)
+    
         scaling_bucket_ae_plot()
         print("=> Generating tradeoff plots")
         tradeoff_baselines_plot()

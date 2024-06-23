@@ -235,8 +235,7 @@ def create_scaling_plots(
     # get all csv files
     if dir_name is None:
         parent_dir = os.path.dirname(os.path.abspath(__file__))
-        log_dir = os.path.join(parent_dir, "scaling", "logs") if dir_name is None else dir_name
-        log_dir = os.path.join(parent_dir, log_dir)  
+        log_dir = os.path.join(parent_dir, "core_scaling", "logs") 
     else:
         log_dir = dir_name
 
@@ -342,7 +341,7 @@ def create_scaling_plots(
                     )
                     plt.legend(handles, labels, loc="upper left")
 
-                    if include_error_bar:
+                    if include_error_bar and all(e >= 0 for e in error):
                         plt.errorbar(x, y, yerr=error, fmt=".", color="black")
 
                     plt.title(title)
@@ -353,7 +352,7 @@ def create_scaling_plots(
                     )
 
                     if is_logspace_y:
-                        ylabel = "$\ln" + ylabel + "$"
+                        ylabel = "$\ln{" + ylabel + "}$"
 
                     plt.ylabel(ylabel)
                     plt.xlabel(xlabel)

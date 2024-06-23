@@ -128,7 +128,6 @@ def scaling_bucket_ae_plot():
         alg_names=[ACTION_ELIMINATION],
         ind_variables=[NUMBER_OF_ATOMS, DIMENSION_OF_ATOMS],
         include_error_bar=True,
-        is_logspace=False,
         is_plot_accuracy=True,
         is_fit=True,
         dir_name=log_dir,

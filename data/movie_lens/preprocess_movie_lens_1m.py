@@ -38,7 +38,9 @@ def main2(filename: str = "movie_lens_1m_ratings"):
     print(np.histogram(data))
     print(data.shape)
 
-
-if __name__ == "__main__":
+def preprocess_movie_lens():
     main1()
     main2()
+
+if __name__ == "__main__":
+    preprocess_movie_lens()

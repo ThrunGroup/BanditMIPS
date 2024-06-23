@@ -65,28 +65,32 @@ def scaling_baselines(algorithms, add_noise=False):
     Run scaling experiments for the 5 datasets (2 synthetic, 3 real) on 9 baseline MIPS algorithms.
     This function is called by repro_script_python.py.
     """
-    # Get data for the scaling experiments for the datasets (not the high-dimensional datasets)
-    for data_type in SCALING_BASELINES_DATATYPES:
-        print(f"=> Creating Scaling log files for {algorithms}")
+    if len(algorithms) == 0:
+        print(f"=> Scaling log files alreayd exist!")
+    else:
+        # Get data for the scaling experiments for the datasets (not the high-dimensional datasets)
+        for data_type in SCALING_BASELINES_DATATYPES:
+            print(f"=> Creating Scaling log files for {algorithms}")
+            for algorithm in algorithms:
+                epsilon, delta, maxmin, size_minmax = get_scaling_baseline_params(data_type)
+                scaling_exp(
+                    epsilon=epsilon,
+                    delta=delta,
+                    maxmin=maxmin,
+                    num_atoms=SCALING_NUM_ATOMS,
+                    size_minmax=size_minmax,
+                    num_experiments=SCALING_NUM_EXPERIMENTS,
+                    num_signals=SCALING_NUM_SIGNALS,
+                    data_type=data_type,
+                    mips_alg=algorithm,
+                    with_replacement=False,
+                    is_normalize=False,
+                    is_logspace=False,
+                    num_best_atoms=1,
+                    add_noise=add_noise
+                )
 
-        for algorithm in algorithms:
-            epsilon, delta, maxmin, size_minmax = get_scaling_baseline_params(data_type)
-            scaling_exp(
-                epsilon=epsilon,
-                delta=delta,
-                maxmin=maxmin,
-                num_atoms=SCALING_NUM_ATOMS,
-                size_minmax=size_minmax,
-                num_experiments=SCALING_NUM_EXPERIMENTS,
-                num_signals=SCALING_NUM_SIGNALS,
-                data_type=data_type,
-                mips_alg=algorithm,
-                with_replacement=False,
-                is_normalize=False,
-                is_logspace=False,
-                num_best_atoms=1,
-                add_noise=add_noise
-            )
+           
 
 
 if __name__ == "__main__":

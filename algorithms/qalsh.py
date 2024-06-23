@@ -41,7 +41,7 @@ class QALSH:
             (sqrt(log(2 / beta)) + sqrt(log(1 / delta))) ** 2 / (2 * (p1 - p2) ** 2)
         )
 
-        self.m = min(num_hash_tables, len(atoms))  #Todo(@vxbrandon): Hard-coded
+        self.m = min(num_hash_tables, len(atoms))  
         self.delta = delta  # Error probability: QALSH algorithm solves c-ANN search with 1/2 - delta probability
         self.approx_const = approx_const  # The approximation constant c in c-ANN search
         self.num_fp = min(int(beta * atoms.shape[0]), 1)  # Number of false positives allowed
@@ -61,16 +61,12 @@ class QALSH:
 
         self.random_vectors = np.random.normal(size=(self.atoms.shape[1], self.m))
         self.hash_tables = [None] * self.m
-        # hash_values = self.atoms @ self.random_vectors
-        # atoms_sort_idcs = np.argsort(hash_values, axis=0)
-        # sorted_hash_values = hash_values[atoms_sort_idcs]
         for i in range(self.m):
             hash_values = self.atoms @ self.random_vectors[:, i]
             atoms_sort_idcs = np.argsort(
                 hash_values
             )  # Sorting indices of atoms in terms of their hash values
             self.hash_tables[i] = [atoms_sort_idcs, hash_values[atoms_sort_idcs]]
-            # Todo: Implement B+ tree for efficient search
         self.is_generate_hash_table = True
 
         # Cost in generating random vectors + having dot product between atoms and random vectors + sorting hash tables

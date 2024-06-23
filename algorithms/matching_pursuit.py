@@ -80,7 +80,7 @@ def matching_pursuit(
     return candidates, total_budget
 
 
-# Todo: currently only supports single signal...
+# NOTE: currently only supports single signal
 def orthogonal_matching_pursuit(
     atoms: np.ndarray,
     signal: np.ndarray,
@@ -150,7 +150,7 @@ def orthogonal_matching_pursuit(
 
         # solve the MIPS problem
         if len(bandit_alg) > 0:
-            # Todo: only supports caching with Action Elimination for now
+            # NOTE: only supports caching with Action Elimination for now
             iter += 1
             print(f"MP iteration {iter}\n => residual is {np.linalg.norm(residual)}\n => maxmin is {maxmin}\n")
 
@@ -214,7 +214,7 @@ def orthogonal_matching_pursuit(
         else:
             L[0, 0] = linalg.norm(atoms[:, lam])
 
-        # @Todo need to account for this swapping in caching
+        # NOTE need to account for this swapping in caching
         atoms.T[n_active], atoms.T[lam] = swap( atoms.T[n_active], atoms.T[lam])
         alpha[n_active], alpha[lam] = swap(alpha[n_active], alpha[lam])
         indices[n_active], indices[lam] = swap(indices[n_active], indices[lam])
@@ -226,7 +226,7 @@ def orthogonal_matching_pursuit(
         )
 
         # need to update residual and maxmin since delta (i.e. arm distances) will get smaller
-        # TODO(@motiwari): Right now this is only a heuristic, may be wrong!
+        # NOTE: Right now this is only a heuristic, may be wrong!
         projection = np.dot(atoms[:, :n_active], gamma)
         residual = signal - projection
         decrease_by = np.linalg.norm(residual) / np.linalg.norm(signal)

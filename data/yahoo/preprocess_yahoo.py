@@ -17,9 +17,8 @@ from surprise.model_selection import cross_validate
 def main1():
     dir_path = os.path.dirname(os.path.realpath(__file__))
     yahoo_fp = os.path.join(dir_path, "../..", "data", "raw_data", "yahoo_dataset_array.npy")
-    yahoo_numpy = np.load(yahoo_fp)
+    yahoo_numpy = np.load(yahoo_fp)  # NOTE: unused for now
 
-    # TODO: Need to add headers to yahoo_numpy to use pandas code?
     df = pd.read_csv(yahoo_fp)
     reader = Reader()
     data = Dataset.load_from_df(df[['Movie_Id', 'Cust_Id', 'Rating']][:], reader)

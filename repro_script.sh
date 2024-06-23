@@ -2,4 +2,4 @@
 
 #pip install -e .
 #pip install algorithms/napg
-python repro_script_python.py $1
+python3 repro_script_python.py $1

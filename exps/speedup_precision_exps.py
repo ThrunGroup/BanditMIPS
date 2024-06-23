@@ -447,9 +447,6 @@ def speedup_precision_exps(
         else:
             raise NotImplementedError(f"{mips_alg} is not implemented")
 
-        # Add all the quantities to take their means later by dividing by the number of seeds. This is valid for all
-        # quantities except accuracy_std. Going to leave for now since we don't plot errors bars in tradeoff experiments
-        # TODO(@motiwari): Fix this. See #83
         avg_budget += np.array(budgets)
         avg_accuracy += np.array(accuracies)
         avg_accuracy_std += np.array(accuracies_std)

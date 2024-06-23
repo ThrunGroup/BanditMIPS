@@ -236,7 +236,7 @@ def create_scaling_plots(
     if dir_name is None:
         parent_dir = os.path.dirname(os.path.abspath(__file__))
         log_dir = os.path.join(parent_dir, "scaling", "logs") if dir_name is None else dir_name
-        log_dir = os.path.join(parent_dir, log_dir)  # TODO(@lukeleeai): Is this correct?
+        log_dir = os.path.join(parent_dir, log_dir)  
     else:
         log_dir = dir_name
 

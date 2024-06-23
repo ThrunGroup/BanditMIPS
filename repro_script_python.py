@@ -37,7 +37,6 @@ def find_absent_algorithms(path, algorithms):
 
 def main(experiment):
     path = os.path.join(os.getcwd(), "exps")
-    # idx = tranlate_experiment(experiment)
 
     if experiment == "noise":
         print("experiments for noise robustness")
@@ -59,28 +58,21 @@ def main(experiment):
         scaling_baselines_algos = find_absent_algorithms(
             scaling_path, SCALING_BASELINES_ALGORITHMS
         )
-
-        # Todo @jey, @luke: use this function accordingly... this is just an example.
         tradeoff_baselines_algos = find_absent_algorithms(
             tradeoff_path, SCALING_BASELINES_ALGORITHMS
         )
 
-        # Todo @jey, @luke: need to add each of your scaling experiments here!
+        # create log files
         print(f"=> Creating Scaling log files for {scaling_baselines_algos}")
         scaling_baselines(scaling_baselines_algos)
-
-        # Todo @jey, @luke: need to add each of your tradeoff experiments here (included example below)!
         print(f"=> Creating Precision-Speed log files for {tradeoff_baselines_algos}")
         tradeoff_baselines()
 
         # generate the relative plots
-        # Todo @jey, @luke: add scaling plot code here
         print("=> Generating scaling plots")
         scaling_baselines_plot(SCALING_BASELINES_ALGORITHMS)
         scaling_fit_plot(SCALING_BASELINES_ALGORITHMS)
         scaling_bucket_ae_plot()
-
-        # Todo @jey, @luke: add tradeoff plot code here
         print("=> Generating tradeoff plots")
         tradeoff_baselines_plot()
 

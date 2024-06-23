@@ -104,13 +104,6 @@ def large_dim_tradeoff_baselines(is_plot: bool = False):
 
 
 def tradeoff_baselines(is_plot: bool = False):
-    """
-    Todo @jey and @luke: fill up this docstring with the corresponding experiments.
-    This is just an example of how I think the organization should be. I've only included the configurations for
-    5 datasets (no high-dimensional ones) for 8 mips algorithsm. For each of your experiments, create a function
-    that defines the configs similar to this one -- MAKE SURE TO NAME IT SOMETHING SPECIFIC -- and put it in
-    this directory with the appropriate name.
-    """
     # Get data for the scaling experiments for the datasets (three synthetic datasets)
     algorithms = [
         ACTION_ELIMINATION,

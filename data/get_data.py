@@ -61,7 +61,7 @@ def choose_signal_and_atoms(data: np.ndarray):
     elif signal_idx == N - 1:
         atoms = data[:signal_idx]
     else:
-        atoms = np.vstack([data[:signal_idx], data[signal_idx + 1 :]])  # TODO: Boundary
+        atoms = np.vstack([data[:signal_idx], data[signal_idx + 1 :]])  
 
     return signals, atoms
 

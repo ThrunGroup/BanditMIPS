@@ -68,7 +68,7 @@ def bucket_action_elimination(
     num_samples_bucket = min(N, num_samples_bucket)
     k = min(
         int(N / num_samples_bucket), int(N / num_best_atoms)
-    )  # Todo: fix hard-coded
+    ) 
     m = int(N / k)
     num_samples_norm = min(
         num_samples_norm, d
@@ -82,9 +82,7 @@ def bucket_action_elimination(
     sampled_atoms_squared = atoms[:, sample_idcs] * atoms[:, sample_idcs]
     sampled_signals_squared = signals[:, sample_idcs] * signals[:, sample_idcs]
 
-    # TODO(vxbrandon): The lines below are not theoretically valid. Have to find a formula for finding the norm of
-    #  random vectors from unknown distribution. See the above commented lines for the general idea.
-    # Partition the atoms
+    # NOTE: The lines below are empirical and not theoretically validated
     atoms_ub = np.sqrt(np.sum(sampled_atoms_squared, axis=1) * d / num_samples_norm)
     signals_ub = np.sqrt(np.sum(sampled_signals_squared, axis=1) * d / num_samples_norm)
     sort_idcs = np.argsort(atoms_ub)[
@@ -156,7 +154,7 @@ def bucket_action_elimination_helper(
     var_proxy: np.ndarray,
     epsilon: float,
     delta: float,
-    num_best_atoms: int = 1,
+    num_best_atoms: int = 2,
     verbose: bool = False,
     batch_size: int = BATCH_SIZE,
     with_replacement: bool = True,
@@ -186,10 +184,6 @@ def bucket_action_elimination_helper(
     else:
         shuffled_idcs = None
 
-    # TODO: Add exact computation if total mnist too big
-    # TODO: Maybe need to change this to a >0 and ucbs > lcbs.max below
-    # TODO: Don't let old candidates come back?
-    # TODO: Change this to > 2, since if there is only one candidate left it will be the leader
     while len(candidates) > num_best_atoms:
         t += 1
         # Find a true inner product value of candidates if we sample more than their dimension (length of

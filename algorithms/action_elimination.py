@@ -26,7 +26,7 @@ def action_elimination(
     epsilon: float,
     delta: float,
     var_proxy_override: bool = False,
-    num_best_atoms: int = 1,
+    num_best_atoms: int = 2,
     abs: bool = False,
     verbose: bool = False,
     with_replacement: bool = False,
@@ -89,10 +89,6 @@ def action_elimination(
             cache_tracker = np.zeros(D, dtype=np.int64)
             cache_map = typed.List([typed.Dict.empty(key_type=nb.int64, value_type=nb.int64) for i in range(D)])
 
-        # TODO: Add exact computation if total mnist too big
-        # TODO: Maybe need to change this to a > 0 and ucbs > lcbs.max below
-        # TODO: Don't let old candidates come back?
-        # TODO: Change this to > 2, since if there is only one candidate left it will be the leader
         while len(candidates) > num_best_atoms:
             t += 1
             start = (t - 1) * batch_size
@@ -103,7 +99,6 @@ def action_elimination(
             if end > d:
                 sample_indices = permutation[start:]
                 signal_sampled = signal[sample_indices]
-                # Todo: should this also be subset_2d_cached? This would only help naive caching
                 candidates_sampled = subset_2d(atoms, rows=candidates, columns=sample_indices)
                 means[candidates] = (
                     (end * means[candidates])

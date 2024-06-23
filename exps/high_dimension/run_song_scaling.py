@@ -48,7 +48,6 @@ def song_scaling(run: bool = True, plot: bool = True):
                 dirname="song_scaling_logs",
                 num_seeds=10,
             )
-            # TODO(@motiwari): Figure out why this is not 100%
             assert (
                 mean_acc >= 0.95
             ), f"Mean accuracy on dataset {data_type} should be above 95\%"

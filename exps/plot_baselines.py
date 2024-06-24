@@ -2,6 +2,7 @@ import os
 import glob
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.ticker as mticker
 import numpy as np
 
 from pandas import read_csv
@@ -216,6 +217,7 @@ def create_scaling_plots(
     is_logspace_y: bool = False,
     is_plot_accuracy: bool = False,
     dir_name: str = None,
+    save_to: str = None,
 ):
     """
     Plot the scaling experiments from the data stored in the logs file.
@@ -233,140 +235,136 @@ def create_scaling_plots(
     :param dir_name: directory name of log files
     """
     # get all csv files
-    if dir_name is None:
-        parent_dir = os.path.dirname(os.path.abspath(__file__))
-        log_dir = os.path.join(parent_dir, "core_scaling", "logs") 
-    else:
-        log_dir = dir_name
-
+    parent_dir = os.path.dirname(os.path.abspath(__file__))
+    log_dir = os.path.join(parent_dir, dir_name) 
+  
     if len(data_types) == 0:
         raise Exception("At least one dataset must be specified")
 
     if len(alg_names) == 0:
         raise Exception("At least one algorithm must be specified")
 
-    for ind_variable in ind_variables:
-        for datatype in data_types:
-            csv_files = glob.glob(
-                # os.path.join(log_dir, f"*SCALING_{datatype}*ind_var{ind_variable}*")
-                os.path.join(log_dir, f"*SCALING_{datatype}*")
+    for datatype in data_types:
+        csv_files = glob.glob(os.path.join(log_dir, f"*SCALING_{datatype}*"))
+        title = f"Scaling Baselines: {translate_dataset_name(datatype)}"
+        for f in csv_files:
+            alg_name = extract_alg(f)
+            data = read_csv(f)
+            independent_var = (
+                "signal_sizes" if "signal_sizes" in data.keys() else "num_atoms"
             )
-            title = f"Scaling Baselines: {translate_dataset_name(datatype)}"
-            for f in csv_files:
-                alg_name = extract_alg(f)
-                data = read_csv(f)
-                independent_var = (
-                    "signal_sizes" if "signal_sizes" in data.keys() else "num_atoms"
+
+            # only get relevant data
+            if f.find(datatype) < 0 or alg_name not in alg_names:
+                continue
+
+            plt.figure()
+            x = data[independent_var].tolist()
+            if is_plot_runtime:
+                y = data["runtime"] * 1000
+                ylabel = "Runtime (ms)"
+
+                # First experiment contains compiling time for numba
+                x = x[1:]
+                y = y[1:]
+                error = data["budgets_std"].tolist()[1:]
+            else:
+                y = data["budgets"].tolist()
+                ylabel = "Sample Complexity"
+                error = data["budgets_std"].tolist()
+            x, y = zip(*sorted(zip(x, y), key=lambda pair: pair[0]))  # sort
+
+            # if is_plot_runtime:
+            #     diff = max(y) - min(y)
+            #     plt.ylim(min(y) - diff / 2, max(y) + diff / 2)
+
+            if not include_error_bar:
+                error = np.zeros_like(error)
+
+            if is_fit:
+                is_logspace = (is_logspace_x and is_logspace_y)
+                title = f"{translate_alg_name(alg_name)} on {translate_dataset_name(datatype)}"
+                if is_logspace_x:
+                    functions = [np.array, power10_sqrt, power10]
+                    function_names = [
+                        "$y \propto log x$",
+                        "$y \propto x^{1/2}$",
+                        "$y \propto x$",
+                    ]
+                    x = np.log(x)
+                elif is_logspace_y:
+                    y = np.log(y)
+
+                else:
+                    functions = [np.array, np.sqrt, np.log]
+                    function_names = ["Linear fit", "Sqrt fit", "Logarithmic fit"]
+
+                fit_and_plot(
+                    xs=x,
+                    ys=y,
+                    function_list=functions,
+                    function_name_list=function_names,
+                    ys_std=error,
+                    is_logspace=is_logspace_x,
+                )
+                plt.title(title)
+                # if not is_plot_runtime:
+                #     plt.ylim(3200, 4300)
+
+                xlabel = get_x_label(is_logspace=is_logspace_x, independent_var=independent_var)
+                if is_logspace_y:
+                    ylabel = "$\ln" + ylabel + "$"
+                plt.ylabel(ylabel)
+                plt.xlabel(xlabel)
+            else:
+                if is_logspace_y:
+                    y = np.log(y)
+                    error = np.where(np.array(error) < SCALING_LOG_BUFFER, SCALING_LOG_BUFFER, np.array(error))
+                    error = np.log(error) / (y * np.sqrt(NUM_SEEDS))
+
+                plt.scatter(
+                    x,
+                    y,
+                    color=ALG_TO_COLOR[alg_name],
+                    label=f"{translate_alg_name(alg_name)}",
+                )
+                plt.plot(x, y, color=ALG_TO_COLOR[alg_name])
+
+                # Sort the legend entries (labels and handles) by labels
+                handles, labels = plt.gca().get_legend_handles_labels()
+                labels, handles = zip(
+                    *sorted(zip(labels, handles), key=lambda t: t[0])
+                )
+                plt.legend(handles, labels, loc="upper left")
+
+                if include_error_bar and all(e >= 0 for e in error):
+                    plt.errorbar(x, y, yerr=error, fmt=".", color="black")
+
+                plt.title(title)
+                xlabel = (
+                    "Signal Vector Size ($d$)"
+                    if independent_var == "signal_sizes"
+                    else "Number of atoms ($N$)"
                 )
 
-                # only get relevant data
-                if f.find(datatype) < 0 or alg_name not in alg_names:
-                    continue
+                if is_logspace_y:
+                    ylabel = "$\ln{" + ylabel + "}$"
 
-                x = data[independent_var].tolist()
-                if is_plot_runtime:
-                    y = data["runtime"] * 1000
-                    ylabel = "Runtime (ms)"
-
-                    # First experiment contains compiling time for numba
-                    x = x[1:]
-                    y = y[1:]
-                    error = data["budgets_std"].tolist()[1:]
-                else:
-                    y = data["budgets"].tolist()
-                    ylabel = "Sample Complexity"
-                    error = data["budgets_std"].tolist()
-                x, y = zip(*sorted(zip(x, y), key=lambda pair: pair[0]))  # sort
-
-                # if is_plot_runtime:
-                #     diff = max(y) - min(y)
-                #     plt.ylim(min(y) - diff / 2, max(y) + diff / 2)
-
-                if not include_error_bar:
-                    error = np.zeros_like(error)
-
-                if is_fit:
-                    is_logspace = (is_logspace_x and is_logspace_y)
-                    title = f"{translate_alg_name(alg_name)} on {translate_dataset_name(datatype)}"
-                    if is_logspace_x:
-                        functions = [np.array, power10_sqrt, power10]
-                        function_names = [
-                            "$y \propto log x$",
-                            "$y \propto x^{1/2}$",
-                            "$y \propto x$",
-                        ]
-                        x = np.log(x)
-                    elif is_logspace_y:
-                        y = np.log(y)
-
-                    else:
-                        functions = [np.array, np.sqrt, np.log]
-                        function_names = ["Linear fit", "Sqrt fit", "Logarithmic fit"]
-
-                    fit_and_plot(
-                        xs=x,
-                        ys=y,
-                        function_list=functions,
-                        function_name_list=function_names,
-                        ys_std=error,
-                        is_logspace=is_logspace_x,
-                    )
-                    plt.title(title)
-                    # if not is_plot_runtime:
-                    #     plt.ylim(3200, 4300)
-
-                    xlabel = get_x_label(is_logspace=is_logspace_x, independent_var=independent_var)
-                    if is_logspace_y:
-                        ylabel = "$\ln" + ylabel + "$"
-                    plt.ylabel(ylabel)
-                    plt.xlabel(xlabel)
-                else:
-                    if is_logspace_y:
-                        y = np.log(y)
-                        error = np.where(np.array(error) < SCALING_LOG_BUFFER, SCALING_LOG_BUFFER, np.array(error))
-                        error = np.log(error) / (y * np.sqrt(NUM_SEEDS))
-
-                    plt.scatter(
-                        x,
-                        y,
-                        color=ALG_TO_COLOR[alg_name],
-                        label=f"{translate_alg_name(alg_name)}",
-                    )
-                    plt.plot(x, y, color=ALG_TO_COLOR[alg_name])
-
-                    # Sort the legend entries (labels and handles) by labels
-                    handles, labels = plt.gca().get_legend_handles_labels()
-                    labels, handles = zip(
-                        *sorted(zip(labels, handles), key=lambda t: t[0])
-                    )
-                    plt.legend(handles, labels, loc="upper left")
-
-                    if include_error_bar and all(e >= 0 for e in error):
-                        plt.errorbar(x, y, yerr=error, fmt=".", color="black")
-
-                    plt.title(title)
-                    xlabel = (
-                        "Signal Vector Size ($d$)"
-                        if independent_var == "signal_sizes"
-                        else "Number of atoms ($N$)"
-                    )
-
-                    if is_logspace_y:
-                        ylabel = "$\ln{" + ylabel + "}$"
-
-                    plt.ylabel(ylabel)
-                    plt.xlabel(xlabel)
-
-                if is_plot_accuracy:
-                    avg_accuracy = np.mean(data["accuracy"])
-                    plt.text(
-                        x[-1],
-                        y[-1],
-                        f"Accuracy: {avg_accuracy}",
-                        ha="right",
-                        va="bottom",
-                    )
-            plt.show()
+                plt.ylabel(ylabel)
+                plt.xlabel(xlabel)
+     
+            if is_plot_accuracy:
+                avg_accuracy = np.mean(data["accuracy"])
+                plt.text(
+                    x[-1],
+                    y[-1],
+                    f"Accuracy: {avg_accuracy}",
+                    ha="right",
+                    va="bottom",
+                )
+            os.makedirs(save_to, exist_ok=True)
+            plt.savefig(os.path.join(save_to, datatype))
+            plt.close()
 
 
 def create_tradeoff_plots(
@@ -377,6 +375,7 @@ def create_tradeoff_plots(
     max_speedup: int = None,
     log_dir: str = None,
     is_logspace: bool = True,
+    save_to: str = "",
 ):
     """
     Plot the tradeoff experiments from the data stored in the logs file.
@@ -398,6 +397,7 @@ def create_tradeoff_plots(
         raise Exception("At least one algorithm must be specified")
 
     for datatype in data_types:
+        plt.figure()
         csv_files = glob.glob(
             os.path.join(log_dir, f"*SPEEDUP_{datatype}*")
         )
@@ -475,7 +475,9 @@ def create_tradeoff_plots(
 
         fig = plt.gcf()
         fig.set_size_inches(6, 4.5)
-        plt.show()
+        os.makedirs(save_to, exist_ok=True)
+        plt.savefig(os.path.join(save_to, datatype))
+        plt.close()
 
 
 def compare_caching_budgets(

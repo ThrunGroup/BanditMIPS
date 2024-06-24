@@ -27,13 +27,18 @@ from utils.constants import (
 )
 
 
-def sift_scaling(run: bool = True, plot: bool = True):
+def sift_scaling(
+    run: bool = True, 
+    plot: bool = True,
+    save_to: str = "",
+):
     """
     Run scaling experiments for the toy datasets
     """
-    dirname = "exps/high_dimension/sift_scaling_logs/"
+    parent_dir = os.path.dirname(os.path.abspath(__file__))
+    dirname = os.path.join(parent_dir, "sift_scaling_logs")
     if run:
-        if os.path.exists(dirname):
+        if os.path.exists(os.path.join(parent_dir, dirname)):
             print("=> sift 1m logs exists!")
         else:
             for data_type in [SIFT_1M]:
@@ -67,6 +72,7 @@ def sift_scaling(run: bool = True, plot: bool = True):
             is_logspace_x=False,
             is_logspace_y=False,
             dir_name=dirname,
+            save_to=save_to,
         )
 
 

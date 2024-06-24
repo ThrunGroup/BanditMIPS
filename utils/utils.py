@@ -350,10 +350,6 @@ def fit_and_plot(
     plt.ticklabel_format(style="sci", axis='y', scilimits=(0, 0))
     plt.ticklabel_format(style="sci", axis='x', scilimits=(0, 0))
 
-    # if is_logspace:
-    #     max_power = int(xs[-1])
-        # plt.xticks(np.arange(max_power + 1), 10 ** np.arange(max_power + 1))
-
     lr = LinearRegression()
     hashes = np.linspace(xs[0], xs[-1], 5000)
 

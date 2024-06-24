@@ -23,7 +23,11 @@ from utils.constants import (
 )
 
 
-def run_crypto_pairs_scaling(run: bool = True, plot: bool = True):
+def run_crypto_pairs_scaling(
+    run: bool = True, 
+    plot: bool = True,
+    save_to: str = "",
+):
     """
     Run scaling experiment for the crypto pairs dataset
 
@@ -34,14 +38,15 @@ def run_crypto_pairs_scaling(run: bool = True, plot: bool = True):
     delta = 0.1
     algorithms = [ACTION_ELIMINATION]
 
-    dirname = "exps/crypto_pairs/crypto_pairs_logs"
+    parent_dir = os.path.dirname(os.path.abspath(__file__))
+    dirname = os.path.join(parent_dir, "crypto_pairs_logs")
     if run:
         if os.path.exists(dirname):
             print("=> crypto pairs logs exists!")
-
         else: 
             for algorithm in algorithms:
                 scaling_exp(
+                    num_seeds=5,
                     mips_alg=algorithm,
                     epsilon=SCALING_EPSILON,
                     delta=delta,
@@ -60,6 +65,7 @@ def run_crypto_pairs_scaling(run: bool = True, plot: bool = True):
 
     if plot:
         # fit the bandit algorithm and greedy-mips for better comparison
+        dirname = os.path.join("crypto_pairs", dirname)
         create_scaling_plots(
             is_fit=True,
             is_logspace_x=False,
@@ -69,6 +75,7 @@ def run_crypto_pairs_scaling(run: bool = True, plot: bool = True):
             data_types=[CRYPTO_PAIRS],
             dir_name=dirname,
             alg_names=[ACTION_ELIMINATION],
+            save_to=save_to,
         )
 
 

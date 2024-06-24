@@ -68,8 +68,9 @@ def scaling_bucket_ae():
 def scaling_bucket_ae_plot():
     this_dir = os.path.dirname(os.path.abspath(__file__))
     log_dir = os.path.join(this_dir, "logs")
+    save_to = os.path.join(os.getcwd(), "figures", "figure7:appendix_scaling")
     create_scaling_plots(
-        data_types=[NETFLIX],
+        data_types=[NETFLIX, COR_NORMAL_CUSTOM],
         alg_names=[BUCKET_ACTION_ELIMINATION],
         ind_variables=[DIMENSION_OF_ATOMS],
         include_error_bar=True,
@@ -77,10 +78,12 @@ def scaling_bucket_ae_plot():
         is_logspace_y=False,
         is_plot_accuracy=True,
         is_fit=True,
-        dir_name=log_dir
+        dir_name=log_dir,
+        save_to=os.path.join(save_to, "bucket_with_d"),
+
     )
     create_scaling_plots(
-        data_types=[NETFLIX_TRANSPOSE],
+        data_types=[NETFLIX_TRANSPOSE, COR_NORMAL_CUSTOM],
         alg_names=[BUCKET_ACTION_ELIMINATION],
         ind_variables=[NUMBER_OF_ATOMS],
         include_error_bar=True,
@@ -88,7 +91,20 @@ def scaling_bucket_ae_plot():
         is_logspace_y=False,
         is_plot_accuracy=True,
         is_fit=True,
-        dir_name=log_dir
+        dir_name=log_dir,
+        save_to=os.path.join(save_to, "bucket_with_n"),
+    )
+    create_scaling_plots(
+        data_types=[NETFLIX_TRANSPOSE, COR_NORMAL_CUSTOM],
+        alg_names=[ACTION_ELIMINATION],
+        ind_variables=[NUMBER_OF_ATOMS],
+        include_error_bar=True,
+        is_logspace_x=False,
+        is_logspace_y=False,
+        is_plot_accuracy=True,
+        is_fit=True,
+        dir_name=log_dir,
+        save_to=os.path.join(save_to, "banditMIPS_with_n"),
     )
 
 

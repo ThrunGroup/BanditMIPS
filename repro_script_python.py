@@ -129,7 +129,7 @@ def main(experiment):
         )
     else:
         raise NameError("arg should be main or appendix")
-    print(f"\n=> {experiment} figures generated!")
+    print(f"=> {experiment} figures generated!")
 
 
 

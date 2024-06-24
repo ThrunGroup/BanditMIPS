@@ -75,41 +75,41 @@ def main(experiment):
         )
     
     elif experiment=="appendix":
-        # # figure 5: tradeoff @ precision 5
-        # tradeoff_path = os.path.join(path, "core_tradeoff", "normalized_logs")
-        # tradeoff_baselines(
-        #     algorithms=TRADEOFF_BASELINES_ALGORITHMS,
-        #     top_ks=[5],
-        #     data_types=TRADEOFF_BASELINES_DATATYPES,
-        #     dir_name=tradeoff_path,
-        # )
-        # tradeoff_baselines_plot(
-        #     algorithms=TRADEOFF_BASELINES_ALGORITHMS,
-        #     top_ks=[5],
-        #     data_types=TRADEOFF_BASELINES_DATATYPES,
-        #     dir_name=tradeoff_path,
-        #     save_to=os.path.join(os.getcwd(), "figures", "figure5:appendix_tradeoff_k5")
-        # )
+        # figure 5: tradeoff @ precision 5
+        tradeoff_path = os.path.join(path, "core_tradeoff", "normalized_logs")
+        tradeoff_baselines(
+            algorithms=TRADEOFF_BASELINES_ALGORITHMS,
+            top_ks=[5],
+            data_types=TRADEOFF_BASELINES_DATATYPES,
+            dir_name=tradeoff_path,
+        )
+        tradeoff_baselines_plot(
+            algorithms=TRADEOFF_BASELINES_ALGORITHMS,
+            top_ks=[5],
+            data_types=TRADEOFF_BASELINES_DATATYPES,
+            dir_name=tradeoff_path,
+            save_to=os.path.join(os.getcwd(), "figures", "figure5:appendix_tradeoff_k5")
+        )
 
-        # # figure 6: tradeoff @ precision 10
-        # tradeoff_path = os.path.join(path, "core_tradeoff", "normalized_logs")
-        # tradeoff_baselines(
-        #     algorithms=TRADEOFF_BASELINES_ALGORITHMS,
-        #     top_ks=[10],
-        #     data_types=TRADEOFF_BASELINES_DATATYPES,
-        #     dir_name=tradeoff_path,
-        # )
-        # tradeoff_baselines_plot(
-        #     algorithms=TRADEOFF_BASELINES_ALGORITHMS,
-        #     top_ks=[10],
-        #     data_types=TRADEOFF_BASELINES_DATATYPES,
-        #     dir_name=tradeoff_path,
-        #     save_to=os.path.join(os.getcwd(), "figures", "figure6:appendix_tradeoff_k10")
-        # )
+        # figure 6: tradeoff @ precision 10
+        tradeoff_path = os.path.join(path, "core_tradeoff", "normalized_logs")
+        tradeoff_baselines(
+            algorithms=TRADEOFF_BASELINES_ALGORITHMS,
+            top_ks=[10],
+            data_types=TRADEOFF_BASELINES_DATATYPES,
+            dir_name=tradeoff_path,
+        )
+        tradeoff_baselines_plot(
+            algorithms=TRADEOFF_BASELINES_ALGORITHMS,
+            top_ks=[10],
+            data_types=TRADEOFF_BASELINES_DATATYPES,
+            dir_name=tradeoff_path,
+            save_to=os.path.join(os.getcwd(), "figures", "figure6:appendix_tradeoff_k10")
+        )
 
-        # # figure 7: compatibility with preprocessing + scaling with N
-        # scaling_bucket_ae()
-        # scaling_bucket_ae_plot()
+        # figure 7: compatibility with preprocessing + scaling with N
+        scaling_bucket_ae()
+        scaling_bucket_ae_plot()
 
         # figure 8: simple song fit
         song_scaling(

@@ -115,25 +115,21 @@ def main(experiment):
         song_scaling(
             run=True, 
             plot=True, 
-            save_to=os.path.join(os.getcwd(), "figures", "figure8:simple_song")
+            save_to=os.path.join(os.getcwd(), "figures", "figure8:appendix_simple_song")
         )
 
         # figure 9: symmetric normal
         complexity_path = os.path.join(path, "core_scaling", "sample_complexity")
         scaling_baselines([ACTION_ELIMINATION], [HIGHLY_SYMMETRIC], complexity_path)
-        import ipdb; ipdb.set_trace()
         scaling_fit_plot(
             algorithm=ACTION_ELIMINATION,
             data_types=[HIGHLY_SYMMETRIC],
             dir_name=complexity_path,
-            save_to=os.path.join(os.getcwd(), "figures", "figure9:highly-symmetric")
+            save_to=os.path.join(os.getcwd(), "figures", "figure9:appendix_highly-symmetric")
         )
-
-
-        import ipdb; ipdb.set_trace()
-
     else:
         raise NameError("arg should be main or appendix")
+    print(f"\n=> {experiment} figures generated!")
 
 
 

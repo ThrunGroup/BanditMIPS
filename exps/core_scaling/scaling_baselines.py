@@ -55,6 +55,8 @@ def get_scaling_baseline_params(data_type):
     elif data_type == NORMAL_PAPER:
         # epsilon, delta, maxmin, size_minmax
         return 0.001, 0.01, (10, 0), (10 ** 3, 10 ** 5)
+    elif data_type == HIGHLY_SYMMETRIC:
+        return 0.001, 0.01, (10, 0), (10 ** 3, 10 ** 5)
     else:
         print(f"{data_type} shouldn't be generated here")
 
@@ -62,10 +64,10 @@ def get_scaling_baseline_params(data_type):
 
 
 def scaling_baselines(
-        algorithms, 
-        data_types,
-        dir_name,
-    ):
+    algorithms, 
+    data_types,
+    dir_name,
+):
     """
     Run scaling experiments for the 5 datasets (2 synthetic, 3 real) on 9 baseline MIPS algorithms.
     This function is called by repro_script_python.py.

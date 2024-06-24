@@ -14,18 +14,20 @@ from exps.high_dimension.run_song_scaling import song_scaling
 from utils.constants import (
     SCALING_BASELINES_ALGORITHMS, 
     TRADEOFF_BASELINES_ALGORITHMS, 
+    TRADEOFF_BASELINES_DATATYPES,
     ACTION_ELIMINATION,
     SCALING_FIT_DATATYPES,
     SCALING_BASELINES_DATATYPES,
+    HIGHLY_SYMMETRIC,
 )
 
 
 def main(experiment):
-    path = os.path.join(os.getcwd(), "exps", "core_scaling")
+    path = os.path.join(os.getcwd(), "exps")
 
     if experiment=="main":
         # figure 1: sample complexity
-        complexity_path = os.path.join(path, "sample_complexity")
+        complexity_path = os.path.join(path, "core_scaling", "sample_complexity")
         scaling_baselines([ACTION_ELIMINATION], SCALING_FIT_DATATYPES, complexity_path)
         scaling_fit_plot(
             algorithm=ACTION_ELIMINATION,
@@ -35,7 +37,7 @@ def main(experiment):
         )
 
         # figure 2: scaling comparisons
-        scaling_path = os.path.join(path, "scaling_comparison")
+        scaling_path = os.path.join(path, "core_scaling", "scaling_comparison")
         scaling_baselines(SCALING_BASELINES_ALGORITHMS, SCALING_BASELINES_DATATYPES, scaling_path)
         scaling_baselines_plot(
             algorithms=SCALING_BASELINES_ALGORITHMS,
@@ -44,25 +46,95 @@ def main(experiment):
             save_to=os.path.join(os.getcwd(), "figures", "figure2:scaling_comparisons")
         )
 
-        import ipdb; ipdb.set_trace()
-        # tradeoff comparisons
+        # figure 3: tradeoff @ precision 1
         tradeoff_path = os.path.join(path, "core_tradeoff", "normalized_logs")
-        tradeoff_baselines(tradeoff_baselines_algos)
-        tradeoff_baselines_plot(TRADEOFF_BASELINES_ALGORITHMS)
+        tradeoff_baselines(
+            algorithms=TRADEOFF_BASELINES_ALGORITHMS,
+            top_ks=[1],
+            data_types=TRADEOFF_BASELINES_DATATYPES,
+            dir_name=tradeoff_path,
+        )
+        tradeoff_baselines_plot(
+            algorithms=TRADEOFF_BASELINES_ALGORITHMS,
+            top_ks=[1],
+            data_types=TRADEOFF_BASELINES_DATATYPES,
+            dir_name=tradeoff_path,
+            save_to=os.path.join(os.getcwd(), "figures", "figure3:tradeoff_k1")
+        )
 
-        # sample complexity
-        scaling_fit_plot(ACTION_ELIMINATION)
-        run_crypto_pairs_scaling(run=True, plot=True)
-        sift_scaling(run=True, plot=True)
-        song_scaling(run=True, plot=True)
-        
-        # compatibility with preprocessing 
-        scaling_bucket_ae()
-        scaling_bucket_ae_plot()
+        # figure 4: high-dimensional datasets
+        run_crypto_pairs_scaling(
+            run=True, 
+            plot=True, 
+            save_to=os.path.join(os.getcwd(), "figures", "figure4:high-dimensional")
+        )
+        sift_scaling(
+            run=True, 
+            plot=True,
+            save_to=os.path.join(os.getcwd(), "figures", "figure4:high-dimensional")
+        )
+    
+    elif experiment=="appendix":
+        # # figure 5: tradeoff @ precision 5
+        # tradeoff_path = os.path.join(path, "core_tradeoff", "normalized_logs")
+        # tradeoff_baselines(
+        #     algorithms=TRADEOFF_BASELINES_ALGORITHMS,
+        #     top_ks=[5],
+        #     data_types=TRADEOFF_BASELINES_DATATYPES,
+        #     dir_name=tradeoff_path,
+        # )
+        # tradeoff_baselines_plot(
+        #     algorithms=TRADEOFF_BASELINES_ALGORITHMS,
+        #     top_ks=[5],
+        #     data_types=TRADEOFF_BASELINES_DATATYPES,
+        #     dir_name=tradeoff_path,
+        #     save_to=os.path.join(os.getcwd(), "figures", "figure5:appendix_tradeoff_k5")
+        # )
 
-        # runtime 
-        print("==> Runtime Scaling plots on OPT and Netflix datasets")
-        exp_runtime_scaling()
+        # # figure 6: tradeoff @ precision 10
+        # tradeoff_path = os.path.join(path, "core_tradeoff", "normalized_logs")
+        # tradeoff_baselines(
+        #     algorithms=TRADEOFF_BASELINES_ALGORITHMS,
+        #     top_ks=[10],
+        #     data_types=TRADEOFF_BASELINES_DATATYPES,
+        #     dir_name=tradeoff_path,
+        # )
+        # tradeoff_baselines_plot(
+        #     algorithms=TRADEOFF_BASELINES_ALGORITHMS,
+        #     top_ks=[10],
+        #     data_types=TRADEOFF_BASELINES_DATATYPES,
+        #     dir_name=tradeoff_path,
+        #     save_to=os.path.join(os.getcwd(), "figures", "figure6:appendix_tradeoff_k10")
+        # )
+
+        # # figure 7: compatibility with preprocessing + scaling with N
+        # scaling_bucket_ae()
+        # scaling_bucket_ae_plot()
+
+        # figure 8: simple song fit
+        song_scaling(
+            run=True, 
+            plot=True, 
+            save_to=os.path.join(os.getcwd(), "figures", "figure8:simple_song")
+        )
+
+        # figure 9: symmetric normal
+        complexity_path = os.path.join(path, "core_scaling", "sample_complexity")
+        scaling_baselines([ACTION_ELIMINATION], [HIGHLY_SYMMETRIC], complexity_path)
+        import ipdb; ipdb.set_trace()
+        scaling_fit_plot(
+            algorithm=ACTION_ELIMINATION,
+            data_types=[HIGHLY_SYMMETRIC],
+            dir_name=complexity_path,
+            save_to=os.path.join(os.getcwd(), "figures", "figure9:highly-symmetric")
+        )
+
+
+        import ipdb; ipdb.set_trace()
+
+    else:
+        raise NameError("arg should be main or appendix")
+
 
 
 if __name__ == "__main__":

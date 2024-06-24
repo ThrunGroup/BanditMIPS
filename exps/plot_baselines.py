@@ -244,7 +244,6 @@ def create_scaling_plots(
     if len(alg_names) == 0:
         raise Exception("At least one algorithm must be specified")
 
-
     for datatype in data_types:
         csv_files = glob.glob(os.path.join(log_dir, f"*SCALING_{datatype}*"))
         title = f"Scaling Baselines: {translate_dataset_name(datatype)}"
@@ -259,6 +258,7 @@ def create_scaling_plots(
             if f.find(datatype) < 0 or alg_name not in alg_names:
                 continue
 
+            plt.figure()
             x = data[independent_var].tolist()
             if is_plot_runtime:
                 y = data["runtime"] * 1000
@@ -362,8 +362,9 @@ def create_scaling_plots(
                     ha="right",
                     va="bottom",
                 )
-        os.makedirs(save_to, exist_ok=True)
-        plt.savefig(os.path.join(save_to, datatype))
+            os.makedirs(save_to, exist_ok=True)
+            plt.savefig(os.path.join(save_to, datatype))
+            plt.close()
 
 
 def create_tradeoff_plots(
@@ -374,6 +375,7 @@ def create_tradeoff_plots(
     max_speedup: int = None,
     log_dir: str = None,
     is_logspace: bool = True,
+    save_to: str = "",
 ):
     """
     Plot the tradeoff experiments from the data stored in the logs file.
@@ -395,6 +397,7 @@ def create_tradeoff_plots(
         raise Exception("At least one algorithm must be specified")
 
     for datatype in data_types:
+        plt.figure()
         csv_files = glob.glob(
             os.path.join(log_dir, f"*SPEEDUP_{datatype}*")
         )
@@ -472,7 +475,9 @@ def create_tradeoff_plots(
 
         fig = plt.gcf()
         fig.set_size_inches(6, 4.5)
-        plt.show()
+        os.makedirs(save_to, exist_ok=True)
+        plt.savefig(os.path.join(save_to, datatype))
+        plt.close()
 
 
 def compare_caching_budgets(

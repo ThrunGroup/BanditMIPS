@@ -206,13 +206,14 @@ SAMPLE_RATE = 44100
 
 # experiment configs
 SCALING_BASELINES_ALGORITHMS = [
-    GREEDY_MIPS,  # greedy approach
+    # GREEDY_MIPS,  # this is excluded since it swamps all other baselines
     LSH_MIPS,  # mapping to higher dimension 
     PCA_MIPS,
     NEQ_MIPS,
     NAPG_MIPS,
     MEDIAN_ELIMINATION,
     ACTION_ELIMINATION,
+    ADAPTIVE_ACTION_ELIMINATION,
 ]
 SCALING_BASELINES_DATATYPES = [
     NORMAL_CUSTOM,
@@ -239,7 +240,12 @@ TRADEOFF_BASELINES_ALGORITHMS = [
     NAPG_MIPS,
     HNSW_MIPS,
 ]
-TRADEOFF_BASELINES_DATATYPES = [MOVIE_LENS, NETFLIX]
+TRADEOFF_BASELINES_DATATYPES = [
+    MOVIE_LENS,
+    NETFLIX,
+    COR_NORMAL_CUSTOM,
+    NORMAL_CUSTOM,
+]
 
 # eps-noise robustness
 NOISE_VAR = 0.2

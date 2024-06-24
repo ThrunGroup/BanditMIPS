@@ -59,7 +59,7 @@ def main(
         df = pd.read_csv(file)
         dataset[i] = df[columns][:num_max_timestamps].values.flatten()
 
-    np.save(os.path.join(os.getcwd(), f"{filename}.npy"), dataset)
+    np.save(os.path.join(directory_path, f"{filename}.npy"), dataset)
 
 def preprocess_crypto_pairs():
     main(with_volume=False)

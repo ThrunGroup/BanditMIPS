@@ -1,5 +1,5 @@
 import numpy as np
-import math
+import os
 from typing import Tuple
 from exps.scaling_exp import scaling_exp
 from exps.plot_baselines import generate_scaling_plots, create_scaling_plots
@@ -61,18 +61,22 @@ def get_scaling_baseline_params(data_type):
     return epsilon, delta, maxmin, size_minmax
 
 
-def scaling_baselines(algorithms, add_noise=False):
+def scaling_baselines(
+        algorithms, 
+        data_types,
+        dir_name,
+    ):
     """
     Run scaling experiments for the 5 datasets (2 synthetic, 3 real) on 9 baseline MIPS algorithms.
     This function is called by repro_script_python.py.
     """
-    if len(algorithms) == 0:
-        print(f"=> Scaling log files alreayd exist!")
+    if os.path.exists(dir_name):
+        print(f"=> retrieving logs...")
     else:
         # Get data for the scaling experiments for the datasets (not the high-dimensional datasets)
-        for data_type in SCALING_BASELINES_DATATYPES:
-            print(f"=> Creating Scaling log files for {algorithms}")
+        for data_type in data_types:
             for algorithm in algorithms:
+                print(f"=> Creating scaling log files for {algorithm} on {data_type}")
                 epsilon, delta, maxmin, size_minmax = get_scaling_baseline_params(data_type)
                 scaling_exp(
                     epsilon=epsilon,
@@ -88,7 +92,8 @@ def scaling_baselines(algorithms, add_noise=False):
                     is_normalize=False,
                     is_logspace=False,
                     num_best_atoms=1,
-                    add_noise=add_noise,
+                    add_noise=False,
+                    dir_name=dir_name,
                 )
 
 
